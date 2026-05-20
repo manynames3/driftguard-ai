@@ -4,6 +4,10 @@ DriftGuard AI turns AWS infrastructure drift into reviewable Terraform pull requ
 
 It triages a drift event, estimates security and cost impact, generates Terraform remediation HCL, validates the HCL with the real Terraform CLI, blocks obvious unsafe patterns, and either opens a GitHub PR or renders a dry-run PR preview.
 
+Live landing page: https://driftguard-ai.pages.dev
+
+Online demo interface: https://driftguard-ai.pages.dev/demo
+
 ## Who This Is For
 
 - Platform teams using AWS, Terraform, and GitHub.
