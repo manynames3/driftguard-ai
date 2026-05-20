@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DriftGuard AI Demo | AWS drift to Terraform PR preview</title>
+    <meta
+      name="description"
+      content="Run a browser-based DriftGuard AI dry-run demo using a sample AWS S3 public access drift event."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23163b2a'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='700' fill='white'%3EDG%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="demo-page">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="DriftGuard AI home">
+        <span class="brand-mark">DG</span>
+        <span>DriftGuard AI</span>
+      </a>
+      <nav class="nav-links" aria-label="Demo navigation">
+        <a href="./index.html#problem">Problem</a>
+        <a href="./index.html#trust">Trust</a>
+        <a href="./index.html#access">Pilot access</a>
+      </nav>
+      <a class="header-cta" href="#demo-runner">Run sample</a>
+    </header>
+
+    <main>
+      <section class="demo-hero" aria-labelledby="demo-heading">
+        <div>
+          <p class="eyebrow">Online dry-run demo</p>
+          <h1 id="demo-heading">Watch one AWS drift event become a Terraform PR preview.</h1>
+          <p class="hero-copy">
+            This browser demo uses the repo’s sample S3 public access drift event and
+            deterministic dry-run output. It is safe to run here because it does not
+            connect to AWS, GitHub, Terraform, or a live LLM.
+          </p>
+        </div>
+        <div class="demo-boundary-card">
+          <h2>What this demo proves</h2>
+          <ul>
+            <li>The workflow is understandable without a CLI.</li>
+            <li>The buyer can see the remediation evidence that would go into a PR.</li>
+            <li>The safety boundary is clear before anyone connects infrastructure.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="demo-runner" class="demo-runner" aria-labelledby="runner-heading">
+        <div class="demo-runner-header">
+          <div>
+            <p class="eyebrow">Sample run</p>
+            <h2 id="runner-heading">S3 public access drift</h2>
+            <p>
+              Click run to step through the same buyer-visible flow: triage, impact,
+              remediation, Terraform validation, policy check, and PR preview.
+            </p>
+          </div>
+          <div class="demo-actions">
+            <button class="button primary" type="button" data-run-demo>Run DriftGuard demo</button>
+            <button class="button secondary" type="button" data-reset-demo>Reset</button>
+          </div>
+        </div>
+
+        <div class="demo-grid">
+          <aside class="event-panel" aria-label="Sample drift event">
+            <div class="panel-heading">
+              <span>Input event</span>
+              <strong>Sample</strong>
+            </div>
+            <pre><code data-event-json></code></pre>
+          </aside>
+
+          <section class="run-panel" aria-label="Demo output">
+            <div class="status-rail" aria-label="Run progress">
+              <div class="status-step" data-step="triage">
+                <span></span>
+                <strong>Triage drift</strong>
+                <small>Waiting</small>
+              </div>
+              <div class="status-step" data-step="impact">
+                <span></span>
+                <strong>Analyze impact</strong>
+                <small>Waiting</small>
+              </div>
+              <div class="status-step" data-step="remediate">
+                <span></span>
+                <strong>Generate Terraform</strong>
+                <small>Waiting</small>
+              </div>
+              <div class="status-step" data-step="validate">
+                <span></span>
+                <strong>Validate HCL</strong>
+                <small>Waiting</small>
+              </div>
+              <div class="status-step" data-step="policy">
+                <span></span>
+                <strong>Run policy checks</strong>
+                <small>Waiting</small>
+              </div>
+              <div class="status-step" data-step="pr">
+                <span></span>
+                <strong>Prepare PR preview</strong>
+                <small>Waiting</small>
+              </div>
+            </div>
+
+            <div class="demo-output" data-demo-output>
+              <div class="empty-output">
+                <h3>Ready for a safe dry run</h3>
+                <p>
+                  The demo will show deterministic output for this sample event. No
+                  data leaves this browser session.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>DriftGuard AI</span>
+      <a href="./index.html">Landing page</a>
+      <a href="./index.html#access">Pilot access</a>
+    </footer>
+
+    <script src="./demo.js"></script>
+  </body>
+</html>

@@ -26,7 +26,7 @@
         <a href="#trust">Trust</a>
         <a href="#access">Access</a>
       </nav>
-      <a class="header-cta" href="#demo">Run demo</a>
+      <a class="header-cta" href="./demo.html">Run demo</a>
     </header>
 
     <main id="top">
@@ -37,9 +37,9 @@
               <span></span>
               <span></span>
               <span></span>
-              <strong>driftguard dry-run</strong>
+              <strong>online dry-run demo</strong>
             </div>
-            <pre><code>$ python driftguard.py --event s3_public_access_drift.json --dry-run
+            <pre><code>Input: S3 public access drift
 
 Status: dry-run PR preview ready
 Triage: high security
@@ -67,7 +67,7 @@ PR: DriftGuard AI remediation: security</code></pre>
             and built-in safety checks.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#demo">Run the dry-run demo</a>
+            <a class="button primary" href="./demo.html">Run the online demo</a>
             <a class="button secondary" href="#access">Copy pilot request brief</a>
           </div>
           <p class="promise">
@@ -127,7 +127,7 @@ PR: DriftGuard AI remediation: security</code></pre>
           <article>
             <span class="step-number">1</span>
             <h3>Describe the drift</h3>
-            <p>Pass a JSON AWS event or a plain-English issue description into the CLI.</p>
+            <p>Start with a JSON AWS event or a plain-English issue description.</p>
           </article>
           <article>
             <span class="step-number">2</span>
@@ -180,7 +180,7 @@ PR: DriftGuard AI remediation: security</code></pre>
         <ol class="numbered-list">
           <li>
             <strong>Input:</strong>
-            <span>Run the CLI with a drift event file or issue description.</span>
+            <span>Use a drift event file or issue description. The online demo shows this with a sample S3 public access event.</span>
           </li>
           <li>
             <strong>Checks:</strong>
@@ -281,7 +281,7 @@ PR: DriftGuard AI remediation: security</code></pre>
             <button class="button primary" type="button" data-copy-template>
               Copy pilot request brief
             </button>
-            <a class="button secondary" href="#demo">Run local demo</a>
+            <a class="button secondary" href="./demo.html">Run online demo</a>
           </div>
           <p class="form-note">
             This page does not pretend signup is live. The brief gives you a concrete
@@ -292,16 +292,22 @@ PR: DriftGuard AI remediation: security</code></pre>
 
       <section id="demo" class="section demo-section" aria-labelledby="demo-heading">
         <div class="section-heading">
-          <p class="eyebrow">Try the workflow</p>
-          <h2 id="demo-heading">Run the honest demo path.</h2>
-          <p>No API key or GitHub token is needed for the deterministic dry-run demo.</p>
+          <p class="eyebrow">Try the workflow online</p>
+          <h2 id="demo-heading">Run the demo without installing anything.</h2>
+          <p>
+            The online demo uses the sample S3 drift event and deterministic dry-run
+            output. It does not call AWS, GitHub, or an LLM.
+          </p>
         </div>
-        <div class="command-block">
-          <button type="button" data-copy-command>Copy command</button>
-          <pre><code>python driftguard.py \
-  --event examples/s3_public_access_drift.json \
-  --dry-run \
-  --mock-llm</code></pre>
+        <div class="online-demo-card">
+          <div>
+            <h3>Browser-based dry run</h3>
+            <p>
+              See the drift event, triage result, generated Terraform, validation
+              result, policy check, and PR preview in one guided interface.
+            </p>
+          </div>
+          <a class="button primary" href="./demo.html">Open online demo</a>
         </div>
       </section>
 
@@ -346,7 +352,7 @@ PR: DriftGuard AI remediation: security</code></pre>
     <footer class="site-footer">
       <span>DriftGuard AI</span>
       <a href="#trust">Security boundary</a>
-      <a href="#demo">Run local demo</a>
+      <a href="./demo.html">Run online demo</a>
     </footer>
 
     <script src="./scripts.js"></script>

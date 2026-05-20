@@ -1,8 +1,3 @@
-const demoCommand = `python driftguard.py \\
-  --event examples/s3_public_access_drift.json \\
-  --dry-run \\
-  --mock-llm`;
-
 const pilotTemplate = `Subject: DriftGuard AI pilot request
 
 Team context:
@@ -33,10 +28,6 @@ async function copyText(text, button, successLabel) {
     button.textContent = originalLabel;
   }, 1800);
 }
-
-document.querySelector("[data-copy-command]")?.addEventListener("click", (event) => {
-  copyText(demoCommand, event.currentTarget, "Copied");
-});
 
 // This static landing page has no backend request handler yet. The CTA copies a
 // pilot brief so the flow is useful without pretending that signup is live.

@@ -147,6 +147,8 @@ Use this flow when showing DriftGuard to users or hiring managers:
 
 The static landing page lives at [site/index.html](site/index.html). It is aimed at platform and cloud security teams evaluating a focused drift-remediation pilot.
 
+The browser-based demo interface lives at [site/demo.html](site/demo.html). It uses deterministic sample output and does not call AWS, GitHub, Terraform, or an LLM.
+
 ## Frontend Deployment
 
 The Cloudflare Pages frontend serves the static files from `site/`.
