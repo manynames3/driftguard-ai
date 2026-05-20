@@ -6,7 +6,7 @@ It triages a drift event, estimates security and cost impact, generates Terrafor
 
 Live landing page: https://driftguard-ai.pages.dev
 
-Online demo interface: https://driftguard-ai.pages.dev/demo
+Online demo interface with S3, security group, and RDS drift scenarios: https://driftguard-ai.pages.dev/demo
 
 ## Who This Is For
 
@@ -151,7 +151,7 @@ Use this flow when showing DriftGuard to users or hiring managers:
 
 The static landing page lives at [site/index.html](site/index.html). It is aimed at platform and cloud security teams evaluating a focused drift-remediation pilot.
 
-The browser-based demo interface lives at [site/demo.html](site/demo.html). It uses deterministic sample output and does not call AWS, GitHub, Terraform, or an LLM.
+The browser-based demo interface lives at [site/demo.html](site/demo.html). It includes deterministic S3 public access, security group exposure, and RDS instance class drift scenarios. It does not call AWS, GitHub, Terraform, or an LLM.
 
 ## Frontend Deployment
 

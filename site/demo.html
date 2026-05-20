@@ -6,7 +6,7 @@
     <title>DriftGuard AI Demo | AWS drift to Terraform PR preview</title>
     <meta
       name="description"
-      content="Run a browser-based DriftGuard AI dry-run demo using a sample AWS S3 public access drift event."
+      content="Run a browser-based DriftGuard AI dry-run demo using sample AWS S3, security group, and RDS drift events."
     />
     <link
       rel="icon"
@@ -32,11 +32,11 @@
       <section class="demo-hero" aria-labelledby="demo-heading">
         <div>
           <p class="eyebrow">Online dry-run demo</p>
-          <h1 id="demo-heading">Watch one AWS drift event become a Terraform PR preview.</h1>
+          <h1 id="demo-heading">Watch common AWS drift events become Terraform PR previews.</h1>
           <p class="hero-copy">
-            This browser demo uses the repo’s sample S3 public access drift event and
-            deterministic dry-run output. It is safe to run here because it does not
-            connect to AWS, GitHub, Terraform, or a live LLM.
+            Choose from S3 public access, security group exposure, or RDS instance
+            class drift. This browser demo uses deterministic dry-run output, so it
+            is safe to run here without connecting AWS, GitHub, Terraform, or a live LLM.
           </p>
         </div>
         <div class="demo-boundary-card">
@@ -44,6 +44,7 @@
           <ul>
             <li>The workflow is understandable without a CLI.</li>
             <li>The buyer can see the remediation evidence that would go into a PR.</li>
+            <li>The demo covers security and cost-oriented drift.</li>
             <li>The safety boundary is clear before anyone connects infrastructure.</li>
           </ul>
         </div>
@@ -52,9 +53,9 @@
       <section id="demo-runner" class="demo-runner" aria-labelledby="runner-heading">
         <div class="demo-runner-header">
           <div>
-            <p class="eyebrow">Sample run</p>
-            <h2 id="runner-heading">S3 public access drift</h2>
-            <p>
+            <p class="eyebrow">Choose a drift scenario</p>
+            <h2 id="runner-heading" data-scenario-title>S3 public access drift</h2>
+            <p data-scenario-description>
               Click run to step through the same buyer-visible flow: triage, impact,
               remediation, Terraform validation, policy check, and PR preview.
             </p>
@@ -65,11 +66,26 @@
           </div>
         </div>
 
+        <div class="scenario-selector" aria-label="Demo drift scenarios">
+          <button class="scenario-card is-active" type="button" data-scenario-key="s3" aria-pressed="true">
+            <strong>S3 public access</strong>
+            <span>Public access controls drift away from the Terraform baseline.</span>
+          </button>
+          <button class="scenario-card" type="button" data-scenario-key="security-group" aria-pressed="false">
+            <strong>Security group exposure</strong>
+            <span>SSH is opened to the internet outside the approved review path.</span>
+          </button>
+          <button class="scenario-card" type="button" data-scenario-key="rds" aria-pressed="false">
+            <strong>RDS instance class drift</strong>
+            <span>A database is resized outside Terraform and creates cost drift.</span>
+          </button>
+        </div>
+
         <div class="demo-grid">
           <aside class="event-panel" aria-label="Sample drift event">
             <div class="panel-heading">
               <span>Input event</span>
-              <strong>Sample</strong>
+              <strong data-scenario-label>Sample</strong>
             </div>
             <pre><code data-event-json></code></pre>
           </aside>

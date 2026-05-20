@@ -6,7 +6,7 @@ Team context:
 - GitHub org/repo:
 
 Drift class to pilot:
-- Example: S3 public access drift, security group exposure, IAM policy drift
+- Example: S3 public access drift, security group exposure, RDS instance class drift
 
 Success criteria:
 - Dry-run PR preview produced

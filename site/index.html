@@ -39,7 +39,7 @@
               <span></span>
               <strong>online dry-run demo</strong>
             </div>
-            <pre><code>Input: S3 public access drift
+            <pre><code>Inputs: S3, security group, RDS drift
 
 Status: dry-run PR preview ready
 Triage: high security
@@ -180,7 +180,7 @@ PR: DriftGuard AI remediation: security</code></pre>
         <ol class="numbered-list">
           <li>
             <strong>Input:</strong>
-            <span>Use a drift event file or issue description. The online demo shows this with a sample S3 public access event.</span>
+            <span>Use a drift event file or issue description. The online demo shows this with S3, security group, and RDS drift examples.</span>
           </li>
           <li>
             <strong>Checks:</strong>
@@ -204,16 +204,12 @@ PR: DriftGuard AI remediation: security</code></pre>
             <p>Turn public-access findings into explicit Terraform public access block remediation.</p>
           </article>
           <article>
-            <h3>Security group exposure</h3>
-            <p>Catch and block obvious public SSH/RDP remediation mistakes before a PR is opened.</p>
+            <h3>Security group exposure drift</h3>
+            <p>Turn public SSH ingress drift into a reviewed Terraform change that restores the approved network boundary.</p>
           </article>
           <article>
-            <h3>Compliance evidence</h3>
-            <p>Put impact, validation output, and policy-check results directly into the pull request.</p>
-          </article>
-          <article>
-            <h3>Platform backlog cleanup</h3>
-            <p>Convert repeated drift tickets into standardized PR-ready remediation work.</p>
+            <h3>RDS instance class drift</h3>
+            <p>Surface cost impact when a database is resized outside Terraform and prepare the rollback PR evidence.</p>
           </article>
         </div>
       </section>
@@ -274,7 +270,7 @@ PR: DriftGuard AI remediation: security</code></pre>
           <ul>
             <li>One AWS account or sandbox environment</li>
             <li>One GitHub Terraform repository</li>
-            <li>One drift class, such as S3 public access or security group exposure</li>
+            <li>One drift class, such as S3 public access, security group exposure, or RDS instance class drift</li>
             <li>Dry-run first, live PR creation only after review</li>
           </ul>
           <div class="access-actions">
@@ -295,16 +291,17 @@ PR: DriftGuard AI remediation: security</code></pre>
           <p class="eyebrow">Try the workflow online</p>
           <h2 id="demo-heading">Run the demo without installing anything.</h2>
           <p>
-            The online demo uses the sample S3 drift event and deterministic dry-run
-            output. It does not call AWS, GitHub, or an LLM.
+            The online demo includes three deterministic drift scenarios: S3 public
+            access, security group exposure, and RDS instance class drift. It does not
+            call AWS, GitHub, Terraform, or an LLM.
           </p>
         </div>
         <div class="online-demo-card">
           <div>
-            <h3>Browser-based dry run</h3>
+            <h3>Browser-based dry run with 3 scenarios</h3>
             <p>
-              See the drift event, triage result, generated Terraform, validation
-              result, policy check, and PR preview in one guided interface.
+              Compare security and cost drift through the same guided flow: input
+              event, triage, impact, Terraform, validation, policy check, and PR preview.
             </p>
           </div>
           <a class="button primary" href="./demo.html">Open online demo</a>
