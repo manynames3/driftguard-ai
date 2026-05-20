@@ -147,6 +147,14 @@ Use this flow when showing DriftGuard to users or hiring managers:
 
 The static landing page lives at [site/index.html](site/index.html). It is aimed at platform and cloud security teams evaluating a focused drift-remediation pilot.
 
+## Frontend Deployment
+
+The Cloudflare Pages frontend serves the static files from `site/`.
+
+```bash
+wrangler pages deploy site --project-name driftguard-ai --branch main
+```
+
 ## Production Boundary
 
 This repo is demo-ready for technical buyers. It is not yet a full SaaS product. Before charging broadly, add a hosted ingestion path, GitHub App auth, durable run history, stronger policy scanning, deployment, and monitoring.
