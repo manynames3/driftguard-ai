@@ -1,0 +1,29 @@
+{
+  "issue_description": "S3 bucket example-public-assets drifted from Terraform and now allows public access. Remediate by enforcing S3 public access blocking in Terraform.",
+  "aws_event": {
+    "source": "aws.s3",
+    "detail-type": "DriftGuard Demo Drift Event",
+    "account": "123456789012",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:s3:::example-public-assets"
+    ],
+    "detail": {
+      "resource_type": "aws_s3_bucket_public_access_block",
+      "resource_id": "example-public-assets",
+      "drift_type": "public_access_enabled",
+      "expected": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "ignore_public_acls": true,
+        "restrict_public_buckets": true
+      },
+      "actual": {
+        "block_public_acls": false,
+        "block_public_policy": false,
+        "ignore_public_acls": false,
+        "restrict_public_buckets": false
+      }
+    }
+  }
+}

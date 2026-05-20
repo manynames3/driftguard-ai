@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DriftGuard AI | Turn AWS drift into reviewable Terraform PRs</title>
+    <meta
+      name="description"
+      content="DriftGuard AI helps AWS, Terraform, and GitHub teams turn infrastructure drift into validated, policy-checked Terraform pull requests."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23163b2a'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='700' fill='white'%3EDG%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="DriftGuard AI home">
+        <span class="brand-mark">DG</span>
+        <span>DriftGuard AI</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#problem">Problem</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#trust">Trust</a>
+        <a href="#access">Access</a>
+      </nav>
+      <a class="header-cta" href="#demo">Run demo</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-visual" aria-hidden="true">
+          <div class="terminal-window">
+            <div class="window-bar">
+              <span></span>
+              <span></span>
+              <span></span>
+              <strong>driftguard dry-run</strong>
+            </div>
+            <pre><code>$ python driftguard.py --event s3_public_access_drift.json --dry-run
+
+Status: dry-run PR preview ready
+Triage: high security
+Terraform validation: passed
+Policy check: no built-in violations detected
+
+PR: DriftGuard AI remediation: security</code></pre>
+          </div>
+          <div class="pr-preview">
+            <div class="pr-topline">Pull request preview</div>
+            <h3>DriftGuard AI remediation: security</h3>
+            <p><strong>Impact:</strong> Public access drift can expose sensitive data or create an unintended internet-facing attack surface.</p>
+            <p><strong>Fix:</strong> Add explicit S3 public access blocking in Terraform.</p>
+            <div class="check-row"><span>Validate</span><strong>Passed</strong></div>
+            <div class="check-row"><span>Policy check</span><strong>Passed</strong></div>
+          </div>
+        </div>
+
+        <div class="hero-content">
+          <p class="eyebrow">For AWS platform and cloud security teams</p>
+          <h1 id="hero-heading">Turn risky AWS drift into validated Terraform PRs.</h1>
+          <p class="hero-copy">
+            DriftGuard AI helps teams running Terraform in GitHub move from drift alert
+            to remediation PR preview with risk context, generated HCL, local validation,
+            and built-in safety checks.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#demo">Run the dry-run demo</a>
+            <a class="button secondary" href="#access">Copy pilot request brief</a>
+          </div>
+          <p class="promise">
+            Product promise: DriftGuard prepares reviewable PRs. It does not apply infrastructure changes.
+          </p>
+        </div>
+      </section>
+
+      <section class="credibility-strip" aria-label="Product boundaries">
+        <span>AWS drift input</span>
+        <span>Terraform validation</span>
+        <span>GitHub PR output</span>
+        <span>No auto-apply path</span>
+      </section>
+
+      <section id="problem" class="section split-section" aria-labelledby="problem-heading">
+        <div>
+          <p class="eyebrow">The broken workflow</p>
+          <h2 id="problem-heading">Drift remediation still depends on whoever has time to untangle AWS, Terraform, and review context.</h2>
+          <p>
+            A drift alert lands. Someone opens AWS, checks Terraform, asks whether the
+            change is risky, drafts HCL, runs validation, and writes a PR summary from
+            memory. If the team is busy, the drift sits.
+          </p>
+        </div>
+        <div class="pain-list" aria-label="Common drift remediation pain">
+          <div>
+            <strong>Security context gets lost</strong>
+            <span>Reviewers see a code diff, not why the drift matters.</span>
+          </div>
+          <div>
+            <strong>Manual HCL drafts are slow</strong>
+            <span>Every fix starts with copy, paste, search, and second guessing.</span>
+          </div>
+          <div>
+            <strong>Validation is inconsistent</strong>
+            <span>Teams trust the person, not a repeatable remediation workflow.</span>
+          </div>
+          <div>
+            <strong>Spreadsheets do not close the loop</strong>
+            <span>Tracking drift is not the same as getting a reviewed PR merged.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section solution-band" aria-labelledby="solution-heading">
+        <div class="section-heading">
+          <p class="eyebrow">The DriftGuard workflow</p>
+          <h2 id="solution-heading">Give engineers a PR, not another drift ticket.</h2>
+          <p>
+            DriftGuard starts with a drift description or event payload and produces the
+            materials a reviewer needs: risk context, Terraform, validation evidence, and
+            a policy-check result.
+          </p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span class="step-number">1</span>
+            <h3>Describe the drift</h3>
+            <p>Pass a JSON AWS event or a plain-English issue description into the CLI.</p>
+          </article>
+          <article>
+            <span class="step-number">2</span>
+            <h3>Generate and validate</h3>
+            <p>The graph triages, writes Terraform, runs <code>terraform validate</code>, and self-corrects failed HCL.</p>
+          </article>
+          <article>
+            <span class="step-number">3</span>
+            <h3>Prepare the PR</h3>
+            <p>Dry-run mode renders a PR preview. Live mode can open a GitHub PR after validation and built-in policy checks pass.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="benefits-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Why teams care</p>
+          <h2 id="benefits-heading">Less remediation drag. More reviewable evidence.</h2>
+        </div>
+        <div class="benefit-grid">
+          <article>
+            <h3>Reduce drift MTTR</h3>
+            <p>Move from alert triage to a concrete Terraform PR preview in one repeatable run.</p>
+          </article>
+          <article>
+            <h3>Make risk visible in the PR</h3>
+            <p>Attach security and cost impact context so reviewers understand the urgency.</p>
+          </article>
+          <article>
+            <h3>Avoid unsafe shortcuts</h3>
+            <p>Terraform validation and built-in guardrails block obvious unsafe remediation before GitHub writes.</p>
+          </article>
+          <article>
+            <h3>Keep humans in control</h3>
+            <p>No infrastructure is applied by the tool. Engineers review, approve, and merge.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow" class="section product-walkthrough" aria-labelledby="how-heading">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2 id="how-heading">The current product path is intentionally narrow.</h2>
+          <p>
+            DriftGuard is built around one monetizable workflow: AWS drift to validated
+            Terraform remediation PR. It does not try to replace your CI/CD system,
+            policy program, or review process.
+          </p>
+        </div>
+        <ol class="numbered-list">
+          <li>
+            <strong>Input:</strong>
+            <span>Run the CLI with a drift event file or issue description.</span>
+          </li>
+          <li>
+            <strong>Checks:</strong>
+            <span>The agent redacts common sensitive values, generates HCL, validates it in a Terraform sandbox, and runs built-in policy checks.</span>
+          </li>
+          <li>
+            <strong>Output:</strong>
+            <span>Get a PR preview in dry-run mode, or open a GitHub PR when live configuration is present.</span>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="use-cases-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Use cases</p>
+          <h2 id="use-cases-heading">Start with drift that creates real review pressure.</h2>
+        </div>
+        <div class="use-case-grid">
+          <article>
+            <h3>S3 public access drift</h3>
+            <p>Turn public-access findings into explicit Terraform public access block remediation.</p>
+          </article>
+          <article>
+            <h3>Security group exposure</h3>
+            <p>Catch and block obvious public SSH/RDP remediation mistakes before a PR is opened.</p>
+          </article>
+          <article>
+            <h3>Compliance evidence</h3>
+            <p>Put impact, validation output, and policy-check results directly into the pull request.</p>
+          </article>
+          <article>
+            <h3>Platform backlog cleanup</h3>
+            <p>Convert repeated drift tickets into standardized PR-ready remediation work.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section comparison" aria-labelledby="different-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Why not the usual workaround?</p>
+          <h2 id="different-heading">Generic tools do not close the remediation loop.</h2>
+        </div>
+        <div class="comparison-grid">
+          <article>
+            <h3>Why not just use ChatGPT?</h3>
+            <p>ChatGPT can draft HCL. DriftGuard is wired to the actual remediation loop: impact summary, Terraform validation, policy checks, and PR formatting.</p>
+          </article>
+          <article>
+            <h3>Why not spreadsheets?</h3>
+            <p>Spreadsheets track drift. They do not produce reviewed Terraform changes or validation evidence.</p>
+          </article>
+          <article>
+            <h3>Why not Zapier or n8n?</h3>
+            <p>Workflow glue can move alerts around. It does not understand Terraform correction loops or PR-ready remediation evidence.</p>
+          </article>
+          <article>
+            <h3>Why not keep doing it manually?</h3>
+            <p>Manual work is fine once. Repeated drift classes deserve a repeatable path from alert to reviewed fix.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="trust" class="section trust-section" aria-labelledby="trust-heading">
+        <div>
+          <p class="eyebrow">Trust boundary</p>
+          <h2 id="trust-heading">Built for review-first remediation.</h2>
+          <p>
+            DriftGuard is useful because it narrows the job. It prepares a validated
+            remediation PR for humans to review. It does not bypass your approval process.
+          </p>
+        </div>
+        <div class="trust-list">
+          <div><strong>No auto-apply path</strong><span>DriftGuard creates PRs. Engineers still approve and merge.</span></div>
+          <div><strong>Local dry-run mode</strong><span>Run the demo without GitHub writes or live infrastructure changes.</span></div>
+          <div><strong>Redaction before prompts</strong><span>Common secrets and AWS account IDs are redacted before LLM calls.</span></div>
+          <div><strong>Validation before PR</strong><span>PR creation is blocked when Terraform validation, policy checks, or upstream LLM steps fail.</span></div>
+        </div>
+      </section>
+
+      <section id="access" class="section access-section" aria-labelledby="access-heading">
+        <div>
+          <p class="eyebrow">Pilot access</p>
+          <h2 id="access-heading">Start with one drift class and one Terraform repo.</h2>
+          <p>
+            Self-serve signup is not open yet. The right next step is a focused pilot:
+            dry-run first, then supervised PR creation after your team reviews the output.
+          </p>
+        </div>
+        <div class="access-panel">
+          <h3>Pilot scope that makes sense now</h3>
+          <ul>
+            <li>One AWS account or sandbox environment</li>
+            <li>One GitHub Terraform repository</li>
+            <li>One drift class, such as S3 public access or security group exposure</li>
+            <li>Dry-run first, live PR creation only after review</li>
+          </ul>
+          <div class="access-actions">
+            <button class="button primary" type="button" data-copy-template>
+              Copy pilot request brief
+            </button>
+            <a class="button secondary" href="#demo">Run local demo</a>
+          </div>
+          <p class="form-note">
+            This page does not pretend signup is live. The brief gives you a concrete
+            request to send to the DriftGuard maintainer or your internal platform lead.
+          </p>
+        </div>
+      </section>
+
+      <section id="demo" class="section demo-section" aria-labelledby="demo-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Try the workflow</p>
+          <h2 id="demo-heading">Run the honest demo path.</h2>
+          <p>No API key or GitHub token is needed for the deterministic dry-run demo.</p>
+        </div>
+        <div class="command-block">
+          <button type="button" data-copy-command>Copy command</button>
+          <pre><code>python driftguard.py \
+  --event examples/s3_public_access_drift.json \
+  --dry-run \
+  --mock-llm</code></pre>
+        </div>
+      </section>
+
+      <section class="section faq-section" aria-labelledby="faq-heading">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2 id="faq-heading">Questions a platform buyer will ask.</h2>
+        </div>
+        <div class="faq-grid">
+          <details open>
+            <summary>Who is this for?</summary>
+            <p>AWS teams using Terraform and GitHub that need faster, reviewable remediation for infrastructure drift.</p>
+          </details>
+          <details>
+            <summary>How is this different from generic AI tools?</summary>
+            <p>It is wired to a specific remediation loop: triage, impact summary, Terraform generation, local validation, policy checks, and PR creation.</p>
+          </details>
+          <details>
+            <summary>What setup is required?</summary>
+            <p>Python, Terraform CLI, an LLM provider key for real runs, and GitHub configuration for live PR creation. Dry-run demo mode does not need live keys.</p>
+          </details>
+          <details>
+            <summary>Is my data safe?</summary>
+            <p>The current repo redacts common secrets and account IDs before LLM prompts. Production deployments should add organization-specific DLP rules and durable audit controls.</p>
+          </details>
+          <details>
+            <summary>What happens after I request access?</summary>
+            <p>Today this is a manual pilot request. The right next step is scoping one repo and one drift class before enabling supervised PR creation.</p>
+          </details>
+          <details>
+            <summary>What does this replace?</summary>
+            <p>It reduces manual drift triage, HCL drafting, validation copy-paste, and PR summary writing. It does not replace human code review.</p>
+          </details>
+          <details>
+            <summary>What does this not do yet?</summary>
+            <p>It does not provide billing, hosted ingestion, GitHub App auth, durable run history, full policy scanning, or auto-apply.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>DriftGuard AI</span>
+      <a href="#trust">Security boundary</a>
+      <a href="#demo">Run local demo</a>
+    </footer>
+
+    <script src="./scripts.js"></script>
+  </body>
+</html>
