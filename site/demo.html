@@ -35,8 +35,9 @@
           <h1 id="demo-heading">Watch common AWS drift events become Terraform PR previews.</h1>
           <p class="hero-copy">
             Choose from S3 public access, security group exposure, or RDS instance
-            class drift. This browser demo uses deterministic dry-run output, so it
-            is safe to run here without connecting AWS, GitHub, Terraform, or a live LLM.
+            class drift. The page works as a browser-safe fallback by default. When
+            the AWS Lambda backend is configured, it sends only the selected fixed
+            scenario to run real Terraform validation.
           </p>
         </div>
         <div class="demo-boundary-card">
@@ -65,6 +66,9 @@
             <button class="button secondary" type="button" data-reset-demo>Reset</button>
           </div>
         </div>
+        <p class="backend-status" data-backend-status>
+          Browser fallback is active. Connect the AWS Lambda demo backend to show real Terraform validation output.
+        </p>
 
         <div class="scenario-selector" aria-label="Demo drift scenarios">
           <button class="scenario-card is-active" type="button" data-scenario-key="s3" aria-pressed="true">
@@ -128,8 +132,8 @@
               <div class="empty-output">
                 <h3>Ready for a safe dry run</h3>
                 <p>
-                  The demo will show deterministic output for this sample event. No
-                  data leaves this browser session.
+                  The demo will use the browser fallback unless a Lambda backend URL
+                  is configured.
                 </p>
               </div>
             </div>
@@ -144,6 +148,7 @@
       <a href="./index.html#access">Pilot access</a>
     </footer>
 
+    <script src="./demo-config.js"></script>
     <script src="./demo.js"></script>
   </body>
 </html>

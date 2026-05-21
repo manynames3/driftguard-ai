@@ -646,6 +646,21 @@ details p {
   gap: 12px;
 }
 
+.backend-status {
+  margin: -10px 0 22px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.backend-status[data-state="connected"] {
+  color: var(--accent-dark);
+  font-weight: 750;
+}
+
+.backend-status[data-state="fallback"] {
+  color: var(--warn);
+}
+
 .scenario-selector {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -805,6 +820,16 @@ details p {
 
 .status-step[data-state="done"] small {
   color: var(--accent-dark);
+  font-weight: 800;
+}
+
+.status-step[data-state="blocked"] span {
+  border-color: var(--risk);
+  background: #fae5e1;
+}
+
+.status-step[data-state="blocked"] small {
+  color: var(--risk);
   font-weight: 800;
 }
 

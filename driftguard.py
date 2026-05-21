@@ -22,6 +22,8 @@ from typing import Any, Dict, Iterable, Literal, Optional, Type, TypedDict
 
 from pydantic import BaseModel, Field
 
+from demo_scenarios import DEMO_SCENARIOS, detect_demo_scenario
+
 
 DEFAULT_MAX_CORRECTION_ATTEMPTS = 3
 DEFAULT_TERRAFORM_INIT_TIMEOUT_SECONDS = 120
@@ -180,58 +182,24 @@ def mock_structured_response(schema: Type[BaseModel], messages: list[Any]) -> Ba
     production runs always use a real approved model.
     """
 
+    prompt_text = "\n".join(str(message) for message in messages)
+    scenario = DEMO_SCENARIOS[detect_demo_scenario(prompt_text)]
+
     if schema is TriageDecision:
         return TriageDecision(
-            category="security",
-            severity="high",
+            category=scenario["triage_category"],
+            severity=scenario["severity"],
             should_remediate=True,
-            reason=(
-                "The drift appears to expose an AWS resource publicly and should "
-                "be remediated through Terraform."
-            ),
+            reason=scenario["triage_reason"],
         )
 
     if schema is ImpactAnalysis:
-        return ImpactAnalysis(
-            summary_markdown=(
-                "- **Security risk:** Public access drift can expose sensitive data "
-                "or create an unintended internet-facing attack surface.\n"
-                "- **Estimated monthly cost impact:** Usually low direct cloud spend, "
-                "but high incident/compliance exposure if abused or discovered in audit.\n"
-                "- **Operational impact:** Creates manual remediation work and weakens "
-                "confidence that Terraform reflects production."
-            )
-        )
+        return ImpactAnalysis(summary_markdown=scenario["impact_summary"])
 
     if schema is TerraformRemediation:
         return TerraformRemediation(
-            reason_for_fix=(
-                "Adds an explicit S3 public access block so Terraform enforces "
-                "private bucket posture and reviewers can approve the remediation."
-            ),
-            terraform_hcl=(
-                'terraform {\n'
-                '  required_version = ">= 1.5.0"\n\n'
-                '  required_providers {\n'
-                '    aws = {\n'
-                '      source  = "hashicorp/aws"\n'
-                '      version = ">= 5.0"\n'
-                '    }\n'
-                '  }\n'
-                '}\n\n'
-                'variable "bucket_name" {\n'
-                '  description = "Name of the drifted S3 bucket to lock down."\n'
-                '  type        = string\n'
-                '  default     = "example-public-assets"\n'
-                '}\n\n'
-                'resource "aws_s3_bucket_public_access_block" "driftguard" {\n'
-                '  bucket = var.bucket_name\n\n'
-                '  block_public_acls       = true\n'
-                '  block_public_policy     = true\n'
-                '  ignore_public_acls      = true\n'
-                '  restrict_public_buckets = true\n'
-                '}\n'
-            ),
+            reason_for_fix=scenario["reason_for_fix"],
+            terraform_hcl=scenario["terraform_hcl"],
         )
 
     raise DriftGuardConfigurationError(f"No mock response is defined for schema {schema}.")
@@ -488,6 +456,10 @@ def run_terraform_command(
     """Run Terraform with automation-safe flags and normalized error capture."""
 
     command_text = " ".join(command)
+    plugin_cache_dir = os.getenv("TF_PLUGIN_CACHE_DIR", "").strip()
+    if plugin_cache_dir:
+        Path(plugin_cache_dir).mkdir(parents=True, exist_ok=True)
+
     env = {
         **os.environ,
         "TF_IN_AUTOMATION": "1",

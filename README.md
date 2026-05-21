@@ -151,7 +151,9 @@ Use this flow when showing DriftGuard to users or hiring managers:
 
 The static landing page lives at [site/index.html](site/index.html). It is aimed at platform and cloud security teams evaluating a focused drift-remediation pilot.
 
-The browser-based demo interface lives at [site/demo.html](site/demo.html). It includes deterministic S3 public access, security group exposure, and RDS instance class drift scenarios. It does not call AWS, GitHub, Terraform, or an LLM.
+The browser-based demo interface lives at [site/demo.html](site/demo.html). It includes S3 public access, security group exposure, and RDS instance class drift scenarios. By default it uses deterministic browser output. When `window.DRIFTGUARD_DEMO_API_URL` is configured, it calls the AWS Lambda demo backend for real Terraform validation.
+
+The optional AWS demo backend lives in [infra/demo-backend](infra/demo-backend). It keeps idle cost near zero by using API Gateway HTTP API, Lambda, DynamoDB on-demand, short log retention, reserved concurrency, and optional `$5/month` AWS Budget alerts. Public runs stay fixed-scenario and mock-LLM, but Terraform validation is real inside Lambda.
 
 ## Frontend Deployment
 
@@ -160,6 +162,8 @@ The Cloudflare Pages frontend serves the static files from `site/`.
 ```bash
 wrangler pages deploy site --project-name driftguard-ai --branch main
 ```
+
+After deploying the AWS demo backend, set `window.DRIFTGUARD_DEMO_API_URL` in [site/demo-config.js](site/demo-config.js) to the CloudFormation `DemoApiUrl` output and redeploy the frontend. If the API URL is blank or unavailable, the browser demo falls back to the deterministic local simulation.
 
 ## Production Boundary
 

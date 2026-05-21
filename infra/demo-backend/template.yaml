@@ -1,0 +1,195 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Low-idle-cost DriftGuard AI demo backend with real Terraform validation.
+
+Parameters:
+  CorsAllowedOrigin:
+    Type: String
+    Default: https://driftguard-ai.pages.dev
+    Description: Browser origin allowed by API Gateway CORS for the demo API.
+  LambdaMemorySize:
+    Type: Number
+    Default: 1024
+    MinValue: 512
+    MaxValue: 3008
+    Description: Lambda memory in MB. Higher memory improves Terraform init speed during active runs.
+  LambdaTimeoutSeconds:
+    Type: Number
+    Default: 60
+    MinValue: 15
+    MaxValue: 120
+    Description: Hard timeout for a backend demo run.
+  ReservedConcurrency:
+    Type: Number
+    Default: 2
+    MinValue: 1
+    MaxValue: 5
+    Description: Caps concurrent demo runs to protect AWS and LLM spend.
+  MonthlyBudgetLimit:
+    Type: Number
+    Default: 5
+    MinValue: 1
+    Description: Monthly AWS budget threshold in USD.
+  BudgetEmail:
+    Type: String
+    Default: ""
+    Description: Email address for budget alerts. Leave blank to skip budget creation.
+  DemoAdminKeyParameterName:
+    Type: String
+    Default: /driftguard/demo/admin-key
+    Description: Optional SSM parameter name containing the admin key for sandbox PR creation.
+  GitHubTokenParameterName:
+    Type: String
+    Default: /driftguard/demo/github-token
+    Description: Optional SSM SecureString parameter name containing a GitHub token for sandbox PR creation.
+  GitHubRepository:
+    Type: String
+    Default: ""
+    Description: Optional sandbox GitHub repository in owner/repo format.
+  GitHubBaseBranch:
+    Type: String
+    Default: main
+    Description: Base branch for optional sandbox PR creation.
+  GitHubTerraformFilePath:
+    Type: String
+    Default: main.tf
+    Description: File path to create or update for optional sandbox PR creation.
+
+Conditions:
+  CreateBudget: !Not [!Equals [!Ref BudgetEmail, ""]]
+
+Globals:
+  Function:
+    Timeout: !Ref LambdaTimeoutSeconds
+    MemorySize: !Ref LambdaMemorySize
+    Architectures:
+      - x86_64
+
+Resources:
+  DemoHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref CorsAllowedOrigin
+          - http://127.0.0.1:4176
+          - http://localhost:4176
+        AllowHeaders:
+          - content-type
+          - x-driftguard-demo-key
+        AllowMethods:
+          - OPTIONS
+          - POST
+
+  DemoRunsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: run_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: run_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  DemoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-api
+      PackageType: Image
+      ReservedConcurrentExecutions: !Ref ReservedConcurrency
+      EphemeralStorage:
+        Size: 1024
+      Environment:
+        Variables:
+          CORS_ALLOWED_ORIGIN: !Ref CorsAllowedOrigin
+          RUNS_TABLE_NAME: !Ref DemoRunsTable
+          RUN_RECORD_TTL_SECONDS: "2592000"
+          DEMO_ADMIN_KEY_PARAMETER_NAME: !Ref DemoAdminKeyParameterName
+          GITHUB_TOKEN_PARAMETER_NAME: !Ref GitHubTokenParameterName
+          GITHUB_REPOSITORY: !Ref GitHubRepository
+          GITHUB_BASE_BRANCH: !Ref GitHubBaseBranch
+          GITHUB_TERRAFORM_FILE_PATH: !Ref GitHubTerraformFilePath
+          GITHUB_BRANCH_PREFIX: driftguard/demo
+          DRIFTGUARD_MOCK_LLM: "true"
+          DEMO_MAX_CORRECTION_ATTEMPTS: "1"
+          TERRAFORM_INIT_TIMEOUT_SECONDS: "45"
+          TERRAFORM_VALIDATE_TIMEOUT_SECONDS: "30"
+          TF_PLUGIN_CACHE_DIR: /tmp/terraform-plugin-cache
+      Events:
+        DemoRun:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DemoHttpApi
+            Path: /api/demo/run
+            Method: POST
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt DemoRunsTable.Arn
+        - Statement:
+            Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource:
+              - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/driftguard/demo/*
+    Metadata:
+      DockerContext: ../..
+      Dockerfile: infra/demo-backend/Dockerfile
+      DockerTag: driftguard-demo-backend
+
+  DemoFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${DemoFunction}
+      RetentionInDays: 3
+
+  MonthlyCostBudget:
+    Type: AWS::Budgets::Budget
+    Condition: CreateBudget
+    Properties:
+      Budget:
+        BudgetName: !Sub ${AWS::StackName}-monthly-cost-cap
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetLimit
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 20
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 60
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+
+Outputs:
+  DemoApiUrl:
+    Description: POST endpoint for the static DriftGuard demo frontend.
+    Value: !Sub https://${DemoHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/api/demo/run
+  DemoRunsTableName:
+    Description: DynamoDB table storing compact demo run history.
+    Value: !Ref DemoRunsTable

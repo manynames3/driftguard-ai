@@ -248,6 +248,12 @@ const scenarioTitleNode = document.querySelector("[data-scenario-title]");
 const scenarioDescriptionNode = document.querySelector("[data-scenario-description]");
 const scenarioLabelNode = document.querySelector("[data-scenario-label]");
 const scenarioButtons = document.querySelectorAll("[data-scenario-key]");
+const backendStatusNode = document.querySelector("[data-backend-status]");
+const demoApiUrl = String(
+  window.DRIFTGUARD_DEMO_API_URL ||
+    window.localStorage.getItem("DRIFTGUARD_DEMO_API_URL") ||
+    "",
+).trim();
 
 let selectedScenarioKey = "s3";
 let currentPrPreview = "";
@@ -309,6 +315,11 @@ function setScenarioButtonsDisabled(isDisabled) {
   });
 }
 
+function setBackendStatus(message, state = "") {
+  backendStatusNode.textContent = message;
+  backendStatusNode.dataset.state = state;
+}
+
 function setStepState(stepName, state, label) {
   const step = document.querySelector(`[data-step="${stepName}"]`);
   step.dataset.state = state;
@@ -318,14 +329,25 @@ function setStepState(stepName, state, label) {
 function resetDemo() {
   renderScenario();
   stepOrder.forEach((stepName) => setStepState(stepName, "idle", "Waiting"));
+  const readyMessage = demoApiUrl
+    ? "Run this fixed scenario against the AWS Lambda backend for real Terraform validation output."
+    : "Pick a scenario and run the deterministic buyer-facing flow. No data leaves this browser session.";
   outputNode.innerHTML = `
     <div class="empty-output">
       <h3>Ready for a safe dry run</h3>
-      <p>Pick a scenario and run the deterministic buyer-facing flow. No data leaves this browser session.</p>
+      <p>${readyMessage}</p>
     </div>
   `;
   runButton.disabled = false;
   setScenarioButtonsDisabled(false);
+  if (demoApiUrl) {
+    setBackendStatus("AWS Lambda backend configured. Runs will call the real Terraform validation API.", "connected");
+  } else {
+    setBackendStatus(
+      "Browser fallback is active. Connect the AWS Lambda demo backend to show real Terraform validation output.",
+      "fallback",
+    );
+  }
 }
 
 function appendOutput(title, eyebrow, bodyHtml) {
@@ -343,12 +365,24 @@ function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
-async function runDemo() {
+function markdownSummaryToHtml(markdown) {
+  const lines = String(markdown)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const bulletLines = lines.filter((line) => line.startsWith("- "));
+
+  if (bulletLines.length === lines.length && bulletLines.length > 0) {
+    return `<ul>${bulletLines
+      .map((line) => `<li>${escapeHtml(line.slice(2)).replaceAll("**", "")}</li>`)
+      .join("")}</ul>`;
+  }
+
+  return `<pre><code>${escapeHtml(markdown || "No impact summary returned.")}</code></pre>`;
+}
+
+async function runBrowserDemo() {
   const scenario = getSelectedScenario();
-  resetDemo();
-  runButton.disabled = true;
-  setScenarioButtonsDisabled(true);
-  outputNode.innerHTML = "";
 
   setStepState("triage", "running", "Running");
   await wait(450);
@@ -407,6 +441,120 @@ async function runDemo() {
      <button class="button secondary compact-button" type="button" data-copy-pr>Copy PR preview</button>`,
   );
   setStepState("pr", "done", "Ready");
+}
+
+function renderBackendOutput(payload) {
+  const triage = payload.triage || {};
+  const terraform = payload.terraform || {};
+  const policy = payload.policy || {};
+  const pullRequest = payload.pull_request || {};
+
+  setStepState("triage", "done", "Passed");
+  setStepState("impact", "done", "Ready");
+  setStepState("remediate", "done", "Generated");
+  setStepState("validate", terraform.is_valid ? "done" : "blocked", terraform.is_valid ? "Passed" : "Blocked");
+  setStepState("policy", policy.is_compliant ? "done" : "blocked", policy.is_compliant ? "Passed" : "Blocked");
+  setStepState(
+    "pr",
+    pullRequest.preview_body || pullRequest.url ? "done" : "blocked",
+    pullRequest.url ? "Opened" : "Ready",
+  );
+
+  appendOutput(
+    "Backend run completed",
+    "AWS Lambda",
+    `<p>Run ID: <code>${escapeHtml(payload.run_id)}</code></p>
+     <p>Mode: ${escapeHtml(payload.mode)}. Duration: ${escapeHtml(payload.duration_ms)} ms.</p>`,
+  );
+  appendOutput(
+    `Triage: ${triage.severity || "unknown"} ${triage.category || "unknown"}`,
+    "Triage",
+    `<p>${escapeHtml(triage.reason || "No triage reason returned.")}</p>`,
+  );
+  appendOutput("Impact summary", "Risk and cost", markdownSummaryToHtml(payload.impact_summary));
+  appendOutput(
+    "Generated Terraform",
+    "Remediation",
+    `<pre><code>${escapeHtml(terraform.hcl || "No Terraform returned.")}</code></pre>`,
+  );
+  appendOutput(
+    "Terraform validate",
+    "Sandbox check",
+    `<pre><code>${escapeHtml(terraform.validation_output || terraform.validation_errors || "No validation output returned.")}</code></pre>`,
+  );
+  appendOutput(
+    "Built-in policy check",
+    "Safety gate",
+    `<pre><code>${escapeHtml(policy.output || policy.errors || "No policy output returned.")}</code></pre>`,
+  );
+
+  currentPrPreview = pullRequest.preview_body || "";
+  if (pullRequest.url) {
+    appendOutput(
+      "Sandbox PR opened",
+      "Reviewer package",
+      `<p><a href="${escapeHtml(pullRequest.url)}" target="_blank" rel="noreferrer">Open pull request</a></p>`,
+    );
+  } else {
+    appendOutput(
+      "PR preview",
+      "Reviewer package",
+      `<pre><code>${escapeHtml(currentPrPreview || pullRequest.error || "No PR preview returned.")}</code></pre>
+       ${
+         currentPrPreview
+           ? '<button class="button secondary compact-button" type="button" data-copy-pr>Copy PR preview</button>'
+           : ""
+       }`,
+    );
+  }
+}
+
+async function runBackendDemo() {
+  setBackendStatus("Calling AWS Lambda backend for real Terraform validation...", "connected");
+  stepOrder.forEach((stepName) => setStepState(stepName, "running", "Queued"));
+
+  const response = await window.fetch(demoApiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      scenario: selectedScenarioKey,
+      create_pr: false,
+    }),
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error || `Backend returned HTTP ${response.status}`);
+  }
+
+  outputNode.innerHTML = "";
+  renderBackendOutput(payload);
+  setBackendStatus("AWS Lambda backend returned real Terraform validation output.", "connected");
+}
+
+async function runDemo() {
+  resetDemo();
+  runButton.disabled = true;
+  setScenarioButtonsDisabled(true);
+  outputNode.innerHTML = "";
+
+  if (demoApiUrl) {
+    try {
+      await runBackendDemo();
+    } catch (error) {
+      setBackendStatus(
+        `Backend unavailable (${error.message}). Showing browser fallback output instead.`,
+        "fallback",
+      );
+      outputNode.innerHTML = "";
+      await runBrowserDemo();
+    }
+  } else {
+    await runBrowserDemo();
+  }
+
   runButton.disabled = false;
   setScenarioButtonsDisabled(false);
 }

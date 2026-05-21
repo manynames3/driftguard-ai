@@ -8,10 +8,12 @@ from driftguard import (
     build_pull_request_body,
     collect_policy_violations,
     format_run_summary,
+    mock_structured_response,
     policy_check_node,
     pull_request_node,
     redact_sensitive_data,
     redact_string,
+    TerraformRemediation,
     validate_cli_prerequisites,
     validate_node,
 )
@@ -160,6 +162,27 @@ def test_format_run_summary_includes_pr_preview():
 
     assert "dry-run PR preview ready" in summary
     assert "Preview" in summary
+
+
+def test_mock_remediation_is_scenario_specific_for_security_group():
+    remediation = mock_structured_response(
+        TerraformRemediation,
+        [("human", "Security group sg-0baddrift allows SSH from 0.0.0.0/0.")],
+    )
+
+    assert "aws_security_group" in remediation.terraform_hcl
+    assert "approved_admin_cidr" in remediation.terraform_hcl
+
+
+def test_mock_remediation_is_scenario_specific_for_rds():
+    remediation = mock_structured_response(
+        TerraformRemediation,
+        [("human", "RDS instance orders-prod drifted to db.r6i.2xlarge.")],
+    )
+
+    assert "aws_db_instance" in remediation.terraform_hcl
+    assert "instance_class" in remediation.terraform_hcl
+    assert "db.t3.medium" in remediation.terraform_hcl
 
 
 def test_validate_cli_prerequisites_allows_mock_dry_run_with_terraform(monkeypatch):
