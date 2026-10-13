@@ -1,0 +1,28 @@
+name: Pilot inquiry
+description: Discuss one AWS drift scenario and a sandbox evaluation.
+title: "Pilot inquiry: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a public inquiry, not an infrastructure connection or paid signup.
+        Do not include credentials, AWS account IDs, private repository URLs, or production data.
+        A maintainer can discuss scope here; private setup details should be arranged separately.
+  - type: dropdown
+    id: scenario
+    attributes:
+      label: First scenario
+      options:
+        - S3 public access
+        - Security group exposure
+        - RDS instance class
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Evaluation outcome
+      description: What should a reviewer be able to decide from the output? Use non-sensitive examples only.
+      placeholder: A reviewer can understand the drift, inspect the HCL, and see validation evidence.
+    validations:
+      required: true

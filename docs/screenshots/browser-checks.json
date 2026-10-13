@@ -1,0 +1,120 @@
+[
+  {
+    "label": "s3 desktop evidence",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "security-group desktop evidence",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "rds desktop evidence",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "homepage 1440",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "RDS demo 1440",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "homepage 1920",
+    "width": 1920,
+    "height": 1080,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "RDS demo 1920",
+    "width": 1920,
+    "height": 1080,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "homepage 390",
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "RDS demo 390",
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "homepage 320",
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "RDS demo 320",
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "brokenImages": [],
+    "clippedControls": []
+  },
+  {
+    "label": "normal flows",
+    "consoleErrors": 0,
+    "scenarios": 3,
+    "evidenceViewsPerScenario": 4
+  },
+  {
+    "label": "synthetic API behavior",
+    "mode": "success",
+    "passed": true
+  },
+  {
+    "label": "synthetic API behavior",
+    "mode": "blocked",
+    "passed": true
+  },
+  {
+    "label": "synthetic API behavior",
+    "mode": "malformed",
+    "passed": true
+  },
+  {
+    "label": "synthetic API behavior",
+    "mode": "busy",
+    "passed": true
+  },
+  {
+    "label": "reset discards late API response",
+    "passed": true
+  }
+]

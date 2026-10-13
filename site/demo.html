@@ -3,152 +3,65 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DriftGuard AI Demo | AWS drift to Terraform PR preview</title>
-    <meta
-      name="description"
-      content="Run a browser-based DriftGuard AI dry-run demo using sample AWS S3, security group, and RDS drift events."
-    />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23163b2a'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='700' fill='white'%3EDG%3C/text%3E%3C/svg%3E"
-    />
+    <title>DriftGuard AI Demo | Inspect AWS drift remediation</title>
+    <meta name="description" content="Inspect three fixed AWS drift scenarios, compare the proposed Terraform fix, and see clearly labeled simulated or backend validation evidence." />
+    <link rel="icon" href="./assets/favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./demo-config.js" defer></script>
+    <script src="./scenarios.js" defer></script>
+    <script src="./demo-core.js" defer></script>
+    <script src="./demo.js" defer></script>
   </head>
   <body class="demo-page">
+    <a class="skip-link" href="#demo-runner">Skip to demo</a>
     <header class="site-header">
-      <a class="brand" href="./index.html" aria-label="DriftGuard AI home">
-        <span class="brand-mark">DG</span>
-        <span>DriftGuard AI</span>
-      </a>
-      <nav class="nav-links" aria-label="Demo navigation">
-        <a href="./index.html#problem">Problem</a>
-        <a href="./index.html#trust">Trust</a>
-        <a href="./index.html#access">Pilot access</a>
-      </nav>
-      <a class="header-cta" href="#demo-runner">Run sample</a>
+      <a class="brand" href="./index.html" aria-label="DriftGuard AI home"><span class="brand-mark" aria-hidden="true">DG</span><span>DriftGuard <span class="brand-ai">AI</span></span></a>
+      <nav class="nav-links" aria-label="Demo navigation"><a href="./index.html#workflow">Workflow</a><a href="./index.html#trust">Safety</a><a href="https://github.com/manynames3/driftguard-ai">Source</a></nav>
+      <a class="button small secondary" href="./index.html#access">Discuss a pilot</a>
     </header>
 
-    <main>
-      <section class="demo-hero" aria-labelledby="demo-heading">
-        <div>
-          <p class="eyebrow">Online dry-run demo</p>
-          <h1 id="demo-heading">Watch common AWS drift events become Terraform PR previews.</h1>
-          <p class="hero-copy">
-            Choose from S3 public access, security group exposure, or RDS instance
-            class drift. The page works as a browser-safe fallback by default. When
-            the AWS Lambda backend is configured, it sends only the selected fixed
-            scenario to run real Terraform validation.
-          </p>
-        </div>
-        <div class="demo-boundary-card">
-          <h2>What this demo proves</h2>
-          <ul>
-            <li>The workflow is understandable without a CLI.</li>
-            <li>The buyer can see the remediation evidence that would go into a PR.</li>
-            <li>The demo covers security and cost-oriented drift.</li>
-            <li>The safety boundary is clear before anyone connects infrastructure.</li>
-          </ul>
-        </div>
+    <main id="demo-runner" class="demo-workspace page-width">
+      <div class="demo-heading"><div><p class="eyebrow">AWS drift / remediation workspace</p><h1>Inspect the fix before anything changes.</h1><p>Three fixed scenarios. No AWS account connection, model API keys, or infrastructure changes.</p></div><a class="text-link" href="./index.html">Back to overview <span aria-hidden="true">&#8599;</span></a></div>
+      <div class="mode-banner" data-mode-banner><strong data-mode-label>Browser simulation</strong><p data-backend-status>Terraform and policy checks are simulated. No scenario data is submitted to a backend.</p></div>
+      <noscript><p class="error-note">This demo needs JavaScript to display fixtures and run scenarios. The source and setup instructions are available on GitHub.</p></noscript>
+
+      <div class="scenario-selector" role="group" aria-label="Choose a drift scenario">
+        <button class="scenario-card is-active" type="button" data-scenario-key="s3" aria-pressed="true"><span class="scenario-type">S3 / Security</span><strong>Public access enabled</strong><span>Private controls changed outside Terraform.</span></button>
+        <button class="scenario-card" type="button" data-scenario-key="security-group" aria-pressed="false"><span class="scenario-type">EC2 / Network</span><strong>SSH open to the internet</strong><span>Administrative access widened to 0.0.0.0/0.</span></button>
+        <button class="scenario-card" type="button" data-scenario-key="rds" aria-pressed="false"><span class="scenario-type">RDS / Cost</span><strong>Database instance resized</strong><span>Capacity changed outside the approved baseline.</span></button>
+      </div>
+
+      <div class="run-controls"><div class="demo-actions"><button class="button primary" type="button" data-run-demo>Run simulated scenario <span aria-hidden="true">&#8594;</span></button><button class="button secondary" type="button" data-reset-demo>Reset</button></div><p data-run-status role="status" aria-live="polite">Choose a scenario, then inspect its reviewer package.</p></div>
+
+      <section class="drift-context" aria-labelledby="scenario-heading">
+        <div class="context-heading"><div><span class="context-resource" data-resource></span><h2 id="scenario-heading" data-scenario-title>S3 public access drift</h2><p data-scenario-description></p></div><span class="severity-label" data-severity></span></div>
+        <div class="drift-comparison"><div><span>Expected in Terraform</span><pre data-expected></pre></div><div><span>Observed in the sample event</span><pre data-actual></pre></div></div>
+        <details class="event-details"><summary>View the synthetic input event</summary><pre><code data-event-json></code></pre></details>
       </section>
 
-      <section id="demo-runner" class="demo-runner" aria-labelledby="runner-heading">
-        <div class="demo-runner-header">
-          <div>
-            <p class="eyebrow">Choose a drift scenario</p>
-            <h2 id="runner-heading" data-scenario-title>S3 public access drift</h2>
-            <p data-scenario-description>
-              Click run to step through the same buyer-visible flow: triage, impact,
-              remediation, Terraform validation, policy check, and PR preview.
-            </p>
-          </div>
-          <div class="demo-actions">
-            <button class="button primary" type="button" data-run-demo>Run DriftGuard demo</button>
-            <button class="button secondary" type="button" data-reset-demo>Reset</button>
-          </div>
-        </div>
-        <p class="backend-status" data-backend-status>
-          Browser fallback is active. Connect the AWS Lambda demo backend to show real Terraform validation output.
-        </p>
+      <ol class="status-rail" aria-label="Run progress">
+        <li data-step="triage"><span>01</span><strong>Triage</strong><small>Waiting</small></li>
+        <li data-step="impact"><span>02</span><strong>Impact</strong><small>Waiting</small></li>
+        <li data-step="remediate"><span>03</span><strong>Terraform</strong><small>Waiting</small></li>
+        <li data-step="validate"><span>04</span><strong>Validate</strong><small>Waiting</small></li>
+        <li data-step="policy"><span>05</span><strong>Policy</strong><small>Waiting</small></li>
+        <li data-step="pr"><span>06</span><strong>PR preview</strong><small>Waiting</small></li>
+      </ol>
 
-        <div class="scenario-selector" aria-label="Demo drift scenarios">
-          <button class="scenario-card is-active" type="button" data-scenario-key="s3" aria-pressed="true">
-            <strong>S3 public access</strong>
-            <span>Public access controls drift away from the Terraform baseline.</span>
-          </button>
-          <button class="scenario-card" type="button" data-scenario-key="security-group" aria-pressed="false">
-            <strong>Security group exposure</strong>
-            <span>SSH is opened to the internet outside the approved review path.</span>
-          </button>
-          <button class="scenario-card" type="button" data-scenario-key="rds" aria-pressed="false">
-            <strong>RDS instance class drift</strong>
-            <span>A database is resized outside Terraform and creates cost drift.</span>
-          </button>
-        </div>
-
-        <div class="demo-grid">
-          <aside class="event-panel" aria-label="Sample drift event">
-            <div class="panel-heading">
-              <span>Input event</span>
-              <strong data-scenario-label>Sample</strong>
-            </div>
-            <pre><code data-event-json></code></pre>
-          </aside>
-
-          <section class="run-panel" aria-label="Demo output">
-            <div class="status-rail" aria-label="Run progress">
-              <div class="status-step" data-step="triage">
-                <span></span>
-                <strong>Triage drift</strong>
-                <small>Waiting</small>
-              </div>
-              <div class="status-step" data-step="impact">
-                <span></span>
-                <strong>Analyze impact</strong>
-                <small>Waiting</small>
-              </div>
-              <div class="status-step" data-step="remediate">
-                <span></span>
-                <strong>Generate Terraform</strong>
-                <small>Waiting</small>
-              </div>
-              <div class="status-step" data-step="validate">
-                <span></span>
-                <strong>Validate HCL</strong>
-                <small>Waiting</small>
-              </div>
-              <div class="status-step" data-step="policy">
-                <span></span>
-                <strong>Run policy checks</strong>
-                <small>Waiting</small>
-              </div>
-              <div class="status-step" data-step="pr">
-                <span></span>
-                <strong>Prepare PR preview</strong>
-                <small>Waiting</small>
-              </div>
-            </div>
-
-            <div class="demo-output" data-demo-output>
-              <div class="empty-output">
-                <h3>Ready for a safe dry run</h3>
-                <p>
-                  The demo will use the browser fallback unless a Lambda backend URL
-                  is configured.
-                </p>
-              </div>
-            </div>
-          </section>
+      <section class="run-result" aria-labelledby="result-heading" aria-busy="false" data-results>
+        <div class="result-heading"><h2 id="result-heading">Reviewer package</h2><span class="mode-label" data-result-mode>Not run yet</span></div>
+        <div class="empty-output" data-empty><span class="empty-symbol" aria-hidden="true">[ ]</span><h3>Your proposed fix will appear here.</h3><p>Inspect the impact, HCL, check evidence, and PR body. Human review and a plan in your own CI are still required.</p></div>
+        <div class="error-output" data-error hidden role="alert"></div>
+        <div data-result-content hidden>
+          <p class="result-summary" data-result-summary></p>
+          <div class="evidence-toolbar"><div class="evidence-views" role="group" aria-label="Evidence views"><button type="button" data-view="impact" aria-pressed="true">Impact</button><button type="button" data-view="terraform" aria-pressed="false">Terraform</button><button type="button" data-view="validation" aria-pressed="false">Validation</button><button type="button" data-view="pr" aria-pressed="false">PR preview</button></div><button class="button small secondary" type="button" data-copy-evidence>Copy evidence</button></div>
+          <div class="evidence-body" data-evidence-body></div>
+          <div class="review-boundary"><strong>Before this becomes a production change</strong><p>Reconcile the proposal with existing resources and state. Review a Terraform plan, your organization's policies, and operational impact. The RDS sample is a standalone fixture, not a safe rollback for a production database.</p></div>
+          <div class="after-run"><div><h3>Evaluate one real drift class with your team.</h3><p>A pilot starts with a sandbox and an agreed baseline.</p></div><a class="button secondary" data-pilot-link href="https://github.com/manynames3/driftguard-ai/issues/new?title=Pilot%20inquiry">Discuss this scenario <span aria-hidden="true">&#8599;</span></a></div><p class="form-note">Opens a public GitHub issue draft. Do not include credentials, private repository links, account IDs, or production data. No signup or payment is created.</p>
         </div>
       </section>
+      <p class="workspace-footnote">A configured backend submits only the fixed scenario name, uses mock LLM responses, and runs Terraform in Lambda. It may retain compact run metadata for 30 days. Public requests never open a GitHub PR.</p>
     </main>
-
-    <footer class="site-footer">
-      <span>DriftGuard AI</span>
-      <a href="./index.html">Landing page</a>
-      <a href="./index.html#access">Pilot access</a>
-    </footer>
-
-    <script src="./demo-config.js"></script>
-    <script src="./demo.js"></script>
+    <footer class="site-footer page-width"><a class="brand" href="./index.html">DriftGuard AI</a><div><a href="./index.html#trust">Safety boundaries</a><a href="https://github.com/manynames3/driftguard-ai">Source &amp; docs</a></div><span>No auto-apply. Review stays with your team.</span></footer>
   </body>
 </html>

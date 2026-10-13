@@ -13,6 +13,11 @@ The public API accepts only the three fixed scenarios: `s3`, `security-group`, a
 It uses deterministic mock LLM output by default, then performs real `terraform init`
 and `terraform validate` in Lambda.
 
+The frontend labels unconfigured browser runs as simulated. A backend failure is shown
+as an error; simulation is a separate user choice, not an automatic successful fallback.
+Validation checks configuration consistency, not deployment safety. See the
+[architecture and data boundaries](../../docs/architecture.md).
+
 ## Prerequisites
 
 - AWS CLI authenticated to the account you want to use.
@@ -115,6 +120,12 @@ Public browser runs are dry-run only. To allow admin-only sandbox PR creation:
 - Lambda reserved concurrency defaults to `2`.
 - Lambda timeout defaults to `60` seconds.
 - The optional budget sends alerts at 20%, 60%, and 100% of the `$5/month` default.
+
+Budget alerts do not enforce a spending ceiling. Traffic, container image storage,
+logs, and API requests can still incur charges. The template's default Lambda timeout
+is 60 seconds, while public HTTP requests can time out earlier; the frontend aborts
+after 35 seconds and lets the user retry. A client abort does not guarantee the Lambda
+execution stops immediately.
 
 Avoid adding a VPC, NAT Gateway, RDS database, always-on ECS service, or load balancer to
 this demo path. Those are the common ways to break the idle-cost target.
